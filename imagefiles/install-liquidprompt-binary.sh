@@ -12,7 +12,7 @@ cd /usr/share
 # Remove liquidprompt if exists
 rm -rf liquidprompt
 
-git clone "https://github.com/nojhan/liquidprompt.git" -b v_1.11
+git clone "https://github.com/nojhan/liquidprompt.git" -b v1.12.1
 
 cat << EOF >> /root/.bashrc
 
