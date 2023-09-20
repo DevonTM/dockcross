@@ -13,17 +13,15 @@ if ! command -v gpg &> /dev/null; then
 	exit 1
 fi
 
-GOSU_VERSION=1.12
-dpkgArch=$(if test "$(uname -m)" = "x86_64"; then echo amd64; else echo i386; fi)
+GOSU_VERSION=1.16
+dpkgArch=$(dpkg --print-architecture | awk -F- '{ print $NF }')
 url="https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-${dpkgArch}"
 url_key="https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-${dpkgArch}.asc"
 
 # download and verify the signature
 export GNUPGHOME="$(mktemp -d)"
 
-gpg --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 || \
-gpg --keyserver hkp://pgp.key-server.io:80 --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 || \
-gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 echo "Downloading $url"
 curl --connect-timeout 30 \
@@ -41,7 +39,7 @@ curl --connect-timeout 30 \
     --retry-max-time 30 \
     -o /usr/local/bin/gosu.asc -# -SL $url_key
 
-gpg --verify /usr/local/bin/gosu.asc
+gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu
 
 # cleanup -- need to kill agent so that there is no race condition for
 # agent files in $GNUPGHOME.  Only need to do this on newer distros
@@ -51,6 +49,6 @@ if [ -n "$GPGCONF_BIN" ] && [ -x $GPGCONF_BIN ] && [[ $($GPGCONF_BIN --help | gr
 	gpgconf --kill gpg-agent
 fi
 
-rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc
+rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc
 
 chmod +x /usr/local/bin/gosu
