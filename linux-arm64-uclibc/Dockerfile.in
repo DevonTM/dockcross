@@ -1,0 +1,52 @@
+ARG ORG=dockcross
+FROM ${ORG}/base:latest
+
+LABEL maintainer="Matt McCormick matt.mccormick@kitware.com"
+
+# This is for 64-bit ARM Linux machine with uClibc-ng
+
+# Crosstool-ng version 2023-09-17
+ENV CT_VERSION crosstool-ng-1.26.0-rc2
+
+#include "common.crosstool"
+
+# The cross-compiling emulator
+RUN apt-get update \
+&& apt-get install -y \
+  qemu-user \
+  qemu-user-static \
+&& apt-get clean --yes
+
+# The CROSS_TRIPLE is a configured alias of the "aarch64-unknown-linux-uclibc" target.
+ENV CROSS_TRIPLE aarch64-unknown-linux-uclibc
+
+ENV CROSS_ROOT ${XCC_PREFIX}/${CROSS_TRIPLE}
+ENV AR=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-ar \
+    AS=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-as \
+    CC=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-gcc \
+    CPP=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-cpp \
+    CXX=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-g++ \
+    FC=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-gfortran \
+    LD=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-ld \
+    NM=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-nm \
+    OBJCOPY=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-objcopy \
+    OBJDUMP=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-objdump \
+    RANLIB=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-ranlib \
+    READELF=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-readelf \
+    STRIP=${CROSS_ROOT}/bin/${CROSS_TRIPLE}-strip
+
+ENV QEMU_LD_PREFIX "${CROSS_ROOT}/${CROSS_TRIPLE}/sysroot"
+ENV QEMU_SET_ENV "LD_LIBRARY_PATH=${CROSS_ROOT}/lib:${QEMU_LD_PREFIX}"
+
+COPY Toolchain.cmake ${CROSS_ROOT}/
+ENV CMAKE_TOOLCHAIN_FILE ${CROSS_ROOT}/Toolchain.cmake
+
+ENV PKG_CONFIG_PATH /usr/lib/aarch64-linux-uclibc/pkgconfig
+
+# Linux kernel cross compilation variables
+ENV PATH ${PATH}:${CROSS_ROOT}/bin
+ENV CROSS_COMPILE ${CROSS_TRIPLE}-
+ENV OS Linux
+ENV ARCH aarch64
+
+#include "common.label-and-env"
