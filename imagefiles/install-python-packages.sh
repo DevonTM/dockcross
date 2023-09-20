@@ -23,10 +23,10 @@ cd /tmp
 curl -# -LO https://bootstrap.pypa.io/pip/get-pip.py
 # https://github.com/pypa/setuptools/issues/2993
 export SETUPTOOLS_USE_DISTUTILS=stdlib
-${PYTHON} get-pip.py --ignore-installed
+${PYTHON} get-pip.py --ignore-installed --break-system-packages
 rm get-pip.py
 
-${PYTHON} -m pip install --upgrade --ignore-installed setuptools
-${PYTHON} -m pip install --ignore-installed conan meson
+${PYTHON} -m pip install --upgrade --ignore-installed --break-system-packages setuptools wheel
+${PYTHON} -m pip install --ignore-installed --break-system-packages conan meson
 # Purge cache to save space: https://stackoverflow.com/questions/37513597/is-it-safe-to-delete-cache-pip-directory
 ${PYTHON} -m pip cache purge
