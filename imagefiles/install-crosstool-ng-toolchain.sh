@@ -72,15 +72,16 @@ git clone https://github.com/crosstool-ng/crosstool-ng.git
 cd crosstool-ng
 git fetch --tags
 
-# checkout 
+# Checkout
 git checkout ${REV}
 
-if [ ${REV} = "crosstool-ng-1.25.0" ]; then
+# Patch zlib
+if [ ${REV} = "crosstool-ng-1.25.0" ] || [ ${REV} = "crosstool-ng-1.26.0-rc2" ]; then
   patch scripts/build/companion_libs/050-zlib.sh -i /dockcross/crosstool-ng-zlib-target.patch
-  # Clean patch
-  rm /dockcross/crosstool-ng-zlib-target.patch
 fi
 
+# Clean patch
+rm /dockcross/crosstool-ng-zlib-target.patch
 
 # Bootstrap and install the tool.
 BOOTSTRAP_PREFIX="${CTNG}/prefix"
