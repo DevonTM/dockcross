@@ -16,6 +16,7 @@ Cross compiling toolchains in Docker images.
 - Make variables **CC**, **CXX**, **LD**, **AS** etc) are set to point to the appropriate tools in the container.
 - Recent [CMake](https://cmake.org) and ninja are precompiled.
 - [Meson](https://mesonbuild.com) is pre-installed.
+- [SCons](https://scons.org) is pre-installed.
 - [Conan.io](https://www.conan.io) can be used as a package manager.
 - Toolchain files configured for CMake.
 - Current directory is mounted as the container\'s workdir, `/work`.
