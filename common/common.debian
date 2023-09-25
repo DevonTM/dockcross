@@ -9,6 +9,7 @@ RUN \
     bash \
     bc \
     bison \
+    bsdmainutils \
     build-essential \
     bzip2 \
     ca-certificates \
