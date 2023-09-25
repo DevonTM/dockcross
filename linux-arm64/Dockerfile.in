@@ -5,8 +5,8 @@ LABEL maintainer="Matt McCormick matt.mccormick@kitware.com"
 
 # This is for 64-bit ARM Linux machine with glibc
 
-# Crosstool-ng version 2023-09-17
-ENV CT_VERSION crosstool-ng-1.26.0-rc2
+# Crosstool-ng version 2023-09-24
+ENV CT_VERSION crosstool-ng-1.26.0
 
 #include "common.crosstool"
 
