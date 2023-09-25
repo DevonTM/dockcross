@@ -7,7 +7,7 @@
 DOCKER := docker
 
 # Docker organization to pull the images from
-ORG = dockcross
+ORG = devontm
 
 # Directory where to generate the dockcross script for each images (e.g bin/dockcross-manylinux2014-x64)
 BIN = ./bin
