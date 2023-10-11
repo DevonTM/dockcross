@@ -20,7 +20,7 @@ if [[ -z "${CURL_HASH}" ]]; then
   exit 1
 fi
 
-CURL_DOWNLOAD_URL=https://curl.haxx.se/download
+CURL_DOWNLOAD_URL=https://curl.se/download
 
 function do_curl_build {
     # We do this shared to avoid obnoxious linker issues where git couldn't
