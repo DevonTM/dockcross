@@ -2,7 +2,7 @@
 
 set -ex
 
-OPENSSH_ROOT=V_9_5_P1
+OPENSSH_ROOT=V_9_7_P1
 
 cd /usr/src
 curl --connect-timeout 20 \
