@@ -80,8 +80,12 @@ if [ ${REV} = "crosstool-ng-1.25.0" ] || [ ${REV} = "crosstool-ng-1.26.0" ]; the
   patch scripts/build/companion_libs/050-zlib.sh -i /dockcross/crosstool-ng-zlib-target.patch
 fi
 
+# Patch uClibc-ng
+git apply /dockcross/0001-add-uClibc-ng-1.0.44.patch
+
 # Clean patch
 rm /dockcross/crosstool-ng-zlib-target.patch
+rm /dockcross/0001-add-uClibc-ng-1.0.44.patch
 
 # Bootstrap and install the tool.
 BOOTSTRAP_PREFIX="${CTNG}/prefix"

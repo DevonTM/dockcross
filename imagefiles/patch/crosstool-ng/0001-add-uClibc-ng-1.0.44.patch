@@ -1,0 +1,93 @@
+From aa0cc5c0ef94f62ffa7860bdd007783323a35800 Mon Sep 17 00:00:00 2001
+From: Irfan Ammar Afif <ipangcheater@gmail.com>
+Date: Mon, 1 Apr 2024 00:59:33 +0700
+Subject: [PATCH] add uClibc-ng 1.0.44
+
+---
+ ...00-fix-getauxval()-on-aarch64-gcc-11.patch | 45 +++++++++++++++++++
+ packages/uClibc-ng/1.0.44/chksum              | 16 +++++++
+ packages/uClibc-ng/1.0.44/version.desc        |  0
+ 3 files changed, 61 insertions(+)
+ create mode 100644 packages/uClibc-ng/1.0.44/0000-fix-getauxval()-on-aarch64-gcc-11.patch
+ create mode 100644 packages/uClibc-ng/1.0.44/chksum
+ create mode 100644 packages/uClibc-ng/1.0.44/version.desc
+
+diff --git a/packages/uClibc-ng/1.0.44/0000-fix-getauxval()-on-aarch64-gcc-11.patch b/packages/uClibc-ng/1.0.44/0000-fix-getauxval()-on-aarch64-gcc-11.patch
+new file mode 100644
+index 00000000..9bd02571
+--- /dev/null
++++ b/packages/uClibc-ng/1.0.44/0000-fix-getauxval()-on-aarch64-gcc-11.patch
+@@ -0,0 +1,45 @@
++From 567e766d6c2af450837bb86befc14067bcc5da75 Mon Sep 17 00:00:00 2001
++From: lordrasmus <lordrasmus@gmail.com>
++Date: Mon, 29 May 2023 20:34:10 +0200
++Subject: fix getauxval() on aarch64 gcc 11
++
++---
++ libc/misc/auxvt/getauxval.c | 12 ++++++++++--
++ 1 file changed, 10 insertions(+), 2 deletions(-)
++
++diff --git a/libc/misc/auxvt/getauxval.c b/libc/misc/auxvt/getauxval.c
++index b4e621301..2bdffaf2c 100755
++--- a/libc/misc/auxvt/getauxval.c
+++++ b/libc/misc/auxvt/getauxval.c
++@@ -22,13 +22,18 @@
++ #include "sys/auxv.h"
++ 
++ 
++-unsigned long int getauxval (unsigned long int __type)
+++/*
+++ *
+++ * aarch64 gcc 11 uses __getauxval() in init_have_lse_atomics()
+++ *
+++ */
+++unsigned long int __getauxval (unsigned long int __type)
++ {
++ 	if ( __type >= AUX_MAX_AT_ID ){
++ 		__set_errno (ENOENT);
++ 		return 0;
++ 	}
++-	
+++
++ 	if ( _dl_auxvt[__type].a_type == __type){
++ 		return _dl_auxvt[__type].a_un.a_val;
++ 	}
++@@ -37,4 +42,7 @@ unsigned long int getauxval (unsigned long int __type)
++ 	return 0;
++ }
++ 
+++unsigned long int getauxval (unsigned long int __type){
+++	return __getauxval( __type );
+++}
++ 
++-- 
++cgit v1.2.3
++
+diff --git a/packages/uClibc-ng/1.0.44/chksum b/packages/uClibc-ng/1.0.44/chksum
+new file mode 100644
+index 00000000..ca647c41
+--- /dev/null
++++ b/packages/uClibc-ng/1.0.44/chksum
+@@ -0,0 +1,16 @@
++md5 uClibc-ng-1.0.44.tar.xz bfa0adb2fdc31bc5cb2a15da7b7d8597
++sha1 uClibc-ng-1.0.44.tar.xz 3e8fd2b7e34eb6ce7ac6e0a2bf2c0b2170a7483d
++sha256 uClibc-ng-1.0.44.tar.xz 7df9d987955827382f1c2400da513456becbb6f868bdfd37737265f1cbeec994
++sha512 uClibc-ng-1.0.44.tar.xz 46ec105ed74131c4e37c0b5277177afedaecbec464a8942f4fffbdca1be09bbdde9762e622dfc5b9216a652bf50efef0a6d7126c37974d4c8156011a736d555b
++md5 uClibc-ng-1.0.44.tar.lz 9d8095353e085c2a7cdd18bf04eba73c
++sha1 uClibc-ng-1.0.44.tar.lz a4fd641cc28136459cae79b64453fee0ed7f6860
++sha256 uClibc-ng-1.0.44.tar.lz 35bde6285c867b598d029f3f9fdbb661a5e21f25164726927daa77ab9fbe17a7
++sha512 uClibc-ng-1.0.44.tar.lz 3954e9e63123a7310d68c47cd620e463ff813c981e900c3f3403c8568b2dcb3f94ca6917b23163759a26a2ced50367324dd0ca4584bf5c4104764d453bf6f4c8
++md5 uClibc-ng-1.0.44.tar.bz2 9ed2a391bc616a49a3566499a93dc174
++sha1 uClibc-ng-1.0.44.tar.bz2 255b0e6b0e52090439fa514a465d2cf3384365fb
++sha256 uClibc-ng-1.0.44.tar.bz2 42ed15869b26bbf891f46a235d71729e931fe2b6a1a294038670f9bea6eddfca
++sha512 uClibc-ng-1.0.44.tar.bz2 e544d27329f17db0f0a7696c27a8f8105072305cc7832cce5fafd2c7e70b030726f53749a861b3e58dd82dbe025347b3f43a03682cb8f54146c6f334488922b7
++md5 uClibc-ng-1.0.44.tar.gz f8bba854604208e2ec0b8b2d03d26037
++sha1 uClibc-ng-1.0.44.tar.gz 6e0a974bec870552d3da074145d175dee8d3c6bc
++sha256 uClibc-ng-1.0.44.tar.gz 332f8a1e6e1b71c470e941670b2da2d81cfd4d5a4df56b08b32596bf23c552a0
++sha512 uClibc-ng-1.0.44.tar.gz d111d23df5ee9fc9863ed4acc8d808e9d2dae7e1d8f3a0a1481ea3a2febedbf5b5e6b671cd2a5f90b516d30f5222fc7500aeb404346f4b20bcca98ba3e4b75ec
+diff --git a/packages/uClibc-ng/1.0.44/version.desc b/packages/uClibc-ng/1.0.44/version.desc
+new file mode 100644
+index 00000000..e69de29b
+-- 
+2.44.0.windows.1
+
