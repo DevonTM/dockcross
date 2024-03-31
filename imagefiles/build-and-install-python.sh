@@ -5,11 +5,11 @@
 #
 # Usage:
 #
-#  build-and-install-python.sh [-version 3.11.6]
+#  build-and-install-python.sh [-version 3.11.8]
 # needed packages : libncurses5-dev libgdbm-dev libnss3-dev 
 #   libssl-dev libsqlite3-dev libreadline-dev libffi-dev libbz2-dev
 
-PYTHON_VERSION=3.11.6
+PYTHON_VERSION=3.11.8
 while [ $# -gt 0 ]; do
   case "$1" in
     -version|-v)
@@ -17,7 +17,7 @@ while [ $# -gt 0 ]; do
       shift
       ;;&
     *)
-      echo "Usage: Usage: ${0##*/} [-version 3.11.6]"
+      echo "Usage: Usage: ${0##*/} [-version 3.11.8]"
       exit 1
       ;;
   esac
